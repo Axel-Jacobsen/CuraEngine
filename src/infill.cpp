@@ -831,16 +831,14 @@ void Infill::connectLines(Polygons& result_lines)
         const Point first_vertex = (!current_infill_line->previous) ? current_infill_line->start : current_infill_line->end;
         previous_vertex =          (!current_infill_line->previous) ? current_infill_line->end : current_infill_line->start;
         current_infill_line = (first_vertex == current_infill_line->start) ? current_infill_line->next : current_infill_line->previous;
-        PolygonRef result_line = result_lines.newPoly();
-        result_line.add(first_vertex);
-        result_line.add(previous_vertex);
+        result_lines.addLine(first_vertex, previous_vertex);
         delete old_line;
         while (current_infill_line)
         {
             old_line = current_infill_line; //We'll delete this after we've traversed to the next line.
             const Point next_vertex = (previous_vertex == current_infill_line->start) ? current_infill_line->end : current_infill_line->start; //Opposite side of the line.
             current_infill_line =     (previous_vertex == current_infill_line->start) ? current_infill_line->next : current_infill_line->previous;
-            result_line.add(next_vertex);
+            result_lines.addLine(previous_vertex, next_vertex);
             previous_vertex = next_vertex;
             delete old_line;
         }
